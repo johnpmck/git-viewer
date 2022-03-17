@@ -17,7 +17,7 @@ class SearchView extends GetView<SearchViewController> {
       FlutterLogo(size: 60),
       SizedBox(height: 24),
       Text(
-        'Enter a GitHub username to view all public repositories.',
+        'View all public repositories for GitHub users or organizations.',
         textAlign: TextAlign.center,
       ),
     ],
@@ -35,6 +35,7 @@ class SearchView extends GetView<SearchViewController> {
         var repos = resource.data;
         if (repos != null) {
           return ListView.separated(
+            controller: controller.scrollController,
             shrinkWrap: true,
             itemCount: repos.length,
             separatorBuilder: (_, idx) => const Divider(),
@@ -76,7 +77,7 @@ class SearchView extends GetView<SearchViewController> {
         body: Obx(
           () {
             return AnimatedContainer(
-              color: Colors.blue.shade200,
+              // color: Colors.blue.shade200,
               duration: const Duration(milliseconds: 250),
               child: controller.searchString().isEmpty
                   ? _defaultBody
@@ -84,15 +85,21 @@ class SearchView extends GetView<SearchViewController> {
             );
           },
         ),
-        floatingActionButton: AnimatedSearchBar(
-          onSubmitted: _updateSearchString,
+        floatingActionButton: Obx(
+          () => AnimatedSearchBar(
+            onSubmitted: _updateSearchString,
+            shrink: controller.shrink(),
+          ),
         ),
       ),
     );
   }
 
   _updateSearchString(String query) {
-    controller.searchString(query);
-    controller.fetchPublicRepositories();
+    if (query.isNotEmpty) {
+      FocusScope.of(Get.context!).unfocus();
+      controller.searchString(query);
+      controller.fetchPublicRepositories();
+    }
   }
 }
