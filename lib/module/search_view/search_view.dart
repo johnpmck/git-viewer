@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:git_viewer/model/git_repo.dart';
 import 'package:git_viewer/module/search_view/widgets/animated_search_bar.dart';
+import 'package:git_viewer/module/search_view/widgets/repo_card.dart';
 import 'package:git_viewer/resource.dart';
 
 import 'search_view_controller.dart';
@@ -39,25 +40,7 @@ class SearchView extends GetView<SearchViewController> {
             shrinkWrap: true,
             itemCount: repos.length,
             separatorBuilder: (_, idx) => const Divider(),
-            itemBuilder: (_, idx) {
-              var repo = repos[idx];
-              return ListTile(
-                leading: repo.owner?.avatarUrl != null
-                    ? CircleAvatar(
-                        backgroundImage:
-                            NetworkImage(repo.owner?.avatarUrl ?? ''),
-                      )
-                    : null,
-                title: Text(
-                  repos[idx].name ?? 'Repository Name',
-                  style: const TextStyle(fontWeight: FontWeight.w500),
-                ),
-                subtitle: Text(
-                  repo.description ?? 'Repository description',
-                  // style: TextStyle(fontSize: 12),
-                ),
-              );
-            },
+            itemBuilder: (_, idx) => RepoCard(repo: repos[idx]),
           );
         }
         return const Center(
