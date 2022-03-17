@@ -1,21 +1,27 @@
-import 'package:flutter/material.dart';
+import 'dart:math';
 
+import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 class AnimatedSearchBar extends StatefulWidget {
   const AnimatedSearchBar({
     Key? key,
     required this.onSubmitted,
+    required this.shrink,
   }) : super(key: key);
 
+  /// Function to invoke when the TextField is submitted.
   final void Function(String) onSubmitted;
+
+  /// Whether to hide the search FAB as the user scrolls content up.
+  final bool shrink;
   @override
   State<AnimatedSearchBar> createState() => _AnimatedSearchBarState();
 }
 
 class _AnimatedSearchBarState extends State<AnimatedSearchBar>
     with SingleTickerProviderStateMixin {
-  /// [AnimationController] for search bar animations.
+  /// [AnimationController] for Transform.rotate() used on hide icon.
   late AnimationController _animationController;
 
   /// [TextEditingController] for search TextField.
@@ -73,9 +79,14 @@ class _AnimatedSearchBarState extends State<AnimatedSearchBar>
     return AnimatedContainer(
       duration: const Duration(milliseconds: 300),
       curve: Curves.easeInOut,
-      height: 56.0,
-      width: _expanded ? expandedWidth : 56.0,
+      height: (widget.shrink && !_expanded) ? 0.0 : 56.0,
+      width: (widget.shrink && !_expanded)
+          ? 0.0
+          : _expanded
+              ? expandedWidth
+              : 56.0,
       decoration: BoxDecoration(
+        color: theme.colorScheme.surface,
         borderRadius: BorderRadius.circular(30.0),
         border: Border.all(
           color: theme.colorScheme.primary,
@@ -100,10 +111,19 @@ class _AnimatedSearchBarState extends State<AnimatedSearchBar>
                   onTap: _expanded ? () => _hide() : () {},
                   child: Container(
                     padding: const EdgeInsets.all(8.0),
-                    child: Icon(
-                      Icons.arrow_forward_ios,
-                      size: 20.0,
-                      color: theme.colorScheme.primary,
+                    child: AnimatedBuilder(
+                      animation: _animationController,
+                      child: Icon(
+                        Icons.arrow_forward_ios,
+                        size: 20.0,
+                        color: theme.colorScheme.primary,
+                      ),
+                      builder: (_, widget) {
+                        return Transform.rotate(
+                          angle: _animationController.value * 2.0 * pi,
+                          child: widget,
+                        );
+                      },
                     ),
                   ),
                 ),
