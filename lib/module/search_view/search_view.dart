@@ -24,6 +24,14 @@ class SearchView extends GetView<SearchViewController> {
     ],
   );
 
+  _updateSearchString(String query) {
+    // Avoid making network call if search String is empty or unchanged.
+    if (query.isNotEmpty && query != controller.searchString()) {
+      controller.searchString(query);
+      controller.fetchPublicRepositories();
+    }
+  }
+
   Widget _buildResults(Resource<List<GitRepo>> resource) {
     switch (resource.status) {
       case Status.error:
@@ -76,13 +84,5 @@ class SearchView extends GetView<SearchViewController> {
         ),
       ),
     );
-  }
-
-  _updateSearchString(String query) {
-    if (query.isNotEmpty) {
-      FocusScope.of(Get.context!).unfocus();
-      controller.searchString(query);
-      controller.fetchPublicRepositories();
-    }
   }
 }
