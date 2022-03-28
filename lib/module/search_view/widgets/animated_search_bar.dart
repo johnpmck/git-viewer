@@ -58,6 +58,12 @@ class _AnimatedSearchBarState extends State<AnimatedSearchBar>
     );
 
     _searchFieldController = TextEditingController();
+
+    _animationController.addListener(() {
+      if (_animationController.status == AnimationStatus.completed) {
+        _searchFieldFocusNode.requestFocus();
+      }
+    });
   }
 
   @override
