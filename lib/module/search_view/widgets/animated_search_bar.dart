@@ -190,8 +190,11 @@ class _AnimatedSearchBarState extends State<AnimatedSearchBar>
                   borderRadius: BorderRadius.circular(30),
                   onTap: !_expanded
                       ? () => _reveal()
-                      : () => widget
-                          .onSubmitted(_searchFieldController.text.trim()),
+                      : () {
+                          widget
+                              .onSubmitted(_searchFieldController.text.trim());
+                          FocusScope.of(context).unfocus();
+                        },
                   child: Container(
                     height: 52.0,
                     width: 52.0,
