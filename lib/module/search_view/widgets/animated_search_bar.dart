@@ -89,137 +89,141 @@ class _AnimatedSearchBarState extends State<AnimatedSearchBar>
     final expandedWidth = deviceWidth - 32.0;
     final textFieldWidth = deviceWidth - 132.0;
 
-    return AnimatedContainer(
+    return AnimatedOpacity(
+      opacity: widget.shrink ? 0 : 1,
       duration: const Duration(milliseconds: 300),
-      curve: Curves.easeInOut,
-      height: (widget.shrink && !_expanded) ? 0.0 : 56.0,
-      width: (widget.shrink && !_expanded)
-          ? 0.0
-          : _expanded
-              ? expandedWidth
-              : 56.0,
-      decoration: BoxDecoration(
-        color: theme.colorScheme.surface,
-        borderRadius: BorderRadius.circular(30.0),
-        border: Border.all(
-          color: theme.colorScheme.primary,
-          width: 2.0,
+      child: AnimatedContainer(
+        duration: const Duration(milliseconds: 300),
+        curve: Curves.easeInOut,
+        height: (widget.shrink && !_expanded) ? 0 : 56.0,
+        width: (widget.shrink && !_expanded)
+            ? 0
+            : _expanded
+                ? expandedWidth
+                : 56.0,
+        decoration: BoxDecoration(
+          color: theme.colorScheme.surface,
+          borderRadius: BorderRadius.circular(30.0),
+          border: Border.all(
+            color: theme.colorScheme.primary,
+            width: 2.0,
+          ),
         ),
-      ),
-      child: Stack(
-        children: [
-          /// [InkWell] which hides the search bar.
-          Positioned(
-            top: 9,
-            left: 8,
-            child: AnimatedOpacity(
-              opacity: _expanded ? 1.0 : 0.0,
-              duration: const Duration(milliseconds: 300),
-              curve: Curves.easeInOut,
-              child: Material(
-                borderRadius: BorderRadius.circular(30),
-                color: Colors.transparent,
-                child: InkWell(
+        child: Stack(
+          children: [
+            /// [InkWell] which hides the search bar.
+            Positioned(
+              top: 9,
+              left: 8,
+              child: AnimatedOpacity(
+                opacity: _expanded ? 1.0 : 0.0,
+                duration: const Duration(milliseconds: 300),
+                curve: Curves.easeInOut,
+                child: Material(
                   borderRadius: BorderRadius.circular(30),
-                  onTap: _expanded ? () => _hide() : () {},
-                  child: Container(
-                    padding: const EdgeInsets.all(8.0),
-                    child: AnimatedBuilder(
-                      animation: _animationController,
-                      child: Icon(
-                        Icons.arrow_forward_ios,
-                        size: 20.0,
-                        color: theme.colorScheme.primary,
-                      ),
-                      builder: (_, widget) {
-                        return Transform.rotate(
-                          angle: _animationController.value * 2.0 * pi,
-                          child: widget,
-                        );
-                      },
-                    ),
-                  ),
-                ),
-              ),
-            ),
-          ),
-
-          /// Search [TextField].
-          AnimatedPositioned(
-            duration: const Duration(milliseconds: 375),
-            left: _expanded ? 50.0 : 20.0,
-            curve: Curves.easeInOut,
-            top: 11,
-            child: AnimatedOpacity(
-              opacity: _expanded ? 1.0 : 0.0,
-              duration: const Duration(milliseconds: 250),
-              child: SizedBox(
-                height: 32.0,
-                width: textFieldWidth,
-                child: TextField(
-                  controller: _searchFieldController,
-                  cursorRadius: const Radius.circular(10.0),
-                  cursorWidth: 2.0,
-                  cursorColor: Colors.black45,
-                  focusNode: _searchFieldFocusNode,
-                  inputFormatters: [LengthLimitingTextInputFormatter(100)],
-                  textInputAction: TextInputAction.done,
-                  onSubmitted: widget.onSubmitted,
-                  decoration: const InputDecoration(
-                    contentPadding: EdgeInsets.symmetric(horizontal: 8),
-                    floatingLabelBehavior: FloatingLabelBehavior.never,
-                    labelText: 'GitHub user',
-                    labelStyle: TextStyle(
-                      color: Color(0xff5B5B5B),
-                      fontWeight: FontWeight.w400,
-                    ),
-                    alignLabelWithHint: true,
-                    border: OutlineInputBorder(
-                      borderSide: BorderSide.none,
-                    ),
-                  ),
-                ),
-              ),
-            ),
-          ),
-
-          /// [InkWell] which starts the animation and updates the search String.
-          Align(
-            alignment: Alignment.centerRight,
-            child: AnimatedOpacity(
-              opacity: 1,
-              duration: const Duration(milliseconds: 250),
-              curve: Curves.easeInOut,
-              child: Material(
-                borderRadius: BorderRadius.circular(30),
-                color: Colors.transparent,
-                child: InkWell(
-                  borderRadius: BorderRadius.circular(30),
-                  onTap: !_expanded
-                      ? () => _reveal()
-                      : () {
-                          widget
-                              .onSubmitted(_searchFieldController.text.trim());
-                          FocusScope.of(context).unfocus();
+                  color: Colors.transparent,
+                  child: InkWell(
+                    borderRadius: BorderRadius.circular(30),
+                    onTap: _expanded ? () => _hide() : () {},
+                    child: Container(
+                      padding: const EdgeInsets.all(8.0),
+                      child: AnimatedBuilder(
+                        animation: _animationController,
+                        child: Icon(
+                          Icons.arrow_forward_ios,
+                          size: 20.0,
+                          color: theme.colorScheme.primary,
+                        ),
+                        builder: (_, widget) {
+                          return Transform.rotate(
+                            angle: _animationController.value * 2.0 * pi,
+                            child: widget,
+                          );
                         },
-                  child: Container(
-                    height: 52.0,
-                    width: 52.0,
-                    decoration: BoxDecoration(
-                      color: theme.colorScheme.primary,
-                      borderRadius: BorderRadius.circular(30),
-                    ),
-                    child: Icon(
-                      Icons.search_outlined,
-                      size: 20.0,
-                      color: theme.colorScheme.onPrimary,
+                      ),
                     ),
                   ),
                 ),
               ),
             ),
-          ),
-        ],
+
+            /// Search [TextField].
+            AnimatedPositioned(
+              duration: const Duration(milliseconds: 375),
+              left: _expanded ? 50.0 : 20.0,
+              curve: Curves.easeInOut,
+              top: 11,
+              child: AnimatedOpacity(
+                opacity: _expanded ? 1.0 : 0.0,
+                duration: const Duration(milliseconds: 250),
+                child: SizedBox(
+                  height: 32.0,
+                  width: textFieldWidth,
+                  child: TextField(
+                    controller: _searchFieldController,
+                    cursorRadius: const Radius.circular(10.0),
+                    cursorWidth: 2.0,
+                    cursorColor: Colors.black45,
+                    focusNode: _searchFieldFocusNode,
+                    inputFormatters: [LengthLimitingTextInputFormatter(100)],
+                    textInputAction: TextInputAction.done,
+                    onSubmitted: widget.onSubmitted,
+                    decoration: const InputDecoration(
+                      contentPadding: EdgeInsets.symmetric(horizontal: 8),
+                      floatingLabelBehavior: FloatingLabelBehavior.never,
+                      labelText: 'GitHub user',
+                      labelStyle: TextStyle(
+                        color: Color(0xff5B5B5B),
+                        fontWeight: FontWeight.w400,
+                      ),
+                      alignLabelWithHint: true,
+                      border: OutlineInputBorder(
+                        borderSide: BorderSide.none,
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+            ),
+
+            /// [InkWell] which starts the animation and updates the search String.
+            Align(
+              alignment: Alignment.centerRight,
+              child: AnimatedOpacity(
+                opacity: 1,
+                duration: const Duration(milliseconds: 250),
+                curve: Curves.easeInOut,
+                child: Material(
+                  borderRadius: BorderRadius.circular(30),
+                  color: Colors.transparent,
+                  child: InkWell(
+                    borderRadius: BorderRadius.circular(30),
+                    onTap: !_expanded
+                        ? () => _reveal()
+                        : () {
+                            widget.onSubmitted(
+                                _searchFieldController.text.trim());
+                            FocusScope.of(context).unfocus();
+                          },
+                    child: Container(
+                      height: 52.0,
+                      width: 52.0,
+                      decoration: BoxDecoration(
+                        color: theme.colorScheme.primary,
+                        borderRadius: BorderRadius.circular(30),
+                      ),
+                      child: Icon(
+                        Icons.search_outlined,
+                        size: 20.0,
+                        color: theme.colorScheme.onPrimary,
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }

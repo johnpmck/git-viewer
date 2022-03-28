@@ -29,15 +29,6 @@ class SearchViewController extends GetxController {
       } else {
         if (shrink.value) shrink(false);
       }
-
-      // if (scrollController.position.atEdge) {
-      //   bool isTop = scrollController.position.pixels == 0;
-      //   if (isTop) {
-      //     log('At the top');
-      //   } else {
-      //     log('At the bottom');
-      //   }
-      // }
     });
   }
 
@@ -57,5 +48,11 @@ class SearchViewController extends GetxController {
       log('Eror: ' + e.toString());
       repos(Resource.error('Eror: ' + e.toString()));
     }
+  }
+
+  @override
+  void onClose() {
+    scrollController.dispose();
+    super.onClose();
   }
 }
