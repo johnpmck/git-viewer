@@ -68,7 +68,6 @@ class SearchView extends GetView<SearchViewController> {
         body: Obx(
           () {
             return AnimatedContainer(
-              // color: Colors.blue.shade200,
               duration: const Duration(milliseconds: 250),
               child: controller.searchString().isEmpty
                   ? _defaultBody
@@ -78,6 +77,7 @@ class SearchView extends GetView<SearchViewController> {
         ),
         floatingActionButton: Obx(
           () => AnimatedSearchBar(
+            currentSeachStringValue: controller.searchString(),
             onSubmitted: _updateSearchString,
             shrink: controller.shrink(),
           ),

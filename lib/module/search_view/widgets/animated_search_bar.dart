@@ -6,9 +6,13 @@ import 'package:flutter/services.dart';
 class AnimatedSearchBar extends StatefulWidget {
   const AnimatedSearchBar({
     Key? key,
+    required this.currentSeachStringValue,
     required this.onSubmitted,
     required this.shrink,
   }) : super(key: key);
+
+  /// The current value of `SearchViewController.searchString`.
+  final String currentSeachStringValue;
 
   /// Function to invoke when the TextField is submitted.
   final void Function(String) onSubmitted;
@@ -37,16 +41,19 @@ class _AnimatedSearchBarState extends State<AnimatedSearchBar>
     setState(() {
       _expanded = true;
       _animationController.forward();
+      _searchFieldController.text = widget.currentSeachStringValue;
     });
   }
 
-  void _hide() {
+  void _hide() async {
     setState(() {
       _expanded = false;
-      _searchFieldController.clear();
-      _searchFieldFocusNode.unfocus();
       _animationController.reverse();
     });
+
+    await Future.delayed(const Duration(milliseconds: 500));
+    _searchFieldFocusNode.unfocus();
+    _searchFieldController.clear();
   }
 
   @override
