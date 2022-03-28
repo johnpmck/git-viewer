@@ -50,10 +50,10 @@ class RepoCard extends StatelessWidget {
     );
   }
 
-  Widget _repoTopicChips(ThemeData theme) {
-    if (repo.topics != null) {
-      var chips = repo.topics?.map((e) {
-        var topic = e as String;
+  Widget? _repoTopicChips(ThemeData theme, List<dynamic>? repoTopics) {
+    if (repoTopics != null) {
+      var topics = repoTopics.map((e) => e as String).toList();
+      var chips = topics.map((e) {
         return Container(
           padding: const EdgeInsets.all(6),
           decoration: BoxDecoration(
@@ -61,7 +61,7 @@ class RepoCard extends StatelessWidget {
             color: theme.colorScheme.primary.withOpacity(0.8),
           ),
           child: Text(
-            topic,
+            e,
             style: TextStyle(
               fontSize: 10,
               color: theme.colorScheme.onPrimary,
@@ -73,10 +73,10 @@ class RepoCard extends StatelessWidget {
       return Wrap(
         spacing: 4.0,
         runSpacing: 4.0,
-        children: chips ?? [],
+        children: chips,
       );
     }
-    return const SizedBox.shrink();
+    return null;
   }
 
   @override
@@ -107,16 +107,18 @@ class RepoCard extends StatelessWidget {
             ],
           ),
           Padding(
-            padding: const EdgeInsets.fromLTRB(48.0, 4.0, 0, 0),
+            padding: const EdgeInsets.fromLTRB(48.0, 4.0, 0, 24.0),
             child: Text(
               repo.description ?? 'Repository description',
             ),
           ),
-          Container(
-            padding: const EdgeInsets.fromLTRB(48.0, 0, 0, 0),
-            margin: const EdgeInsets.symmetric(vertical: 16),
-            child: _repoTopicChips(theme),
-          ),
+          if (repo.topics != null && (repo.topics ?? []).isNotEmpty) ...[
+            Container(
+              padding: const EdgeInsets.fromLTRB(48.0, 0, 0, 0),
+              margin: const EdgeInsets.only(bottom: 20),
+              child: _repoTopicChips(theme, repo.topics),
+            ),
+          ],
           Wrap(
             alignment: WrapAlignment.spaceEvenly,
             children: [
